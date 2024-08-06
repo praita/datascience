@@ -1,0 +1,99 @@
+import pandas as pd
+import os
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+"""
+Questão 1
+Na pasta data_sets existe um arquivo denominado Rodrigues_etal1995_Reservatorios_Parana.xlsx com quatro planilhas.
+
+1.1. Crie 4 data frames com cada uma das planílhas do arquivo: Bacia; tamanho_idade; qualidade_agua; fauna.
+
+1.2. Use a método join para unir todas as informações dos reservatórios em um único data frame. Utilize o argumento how = 'outer' para guardar todas as linhas, inclusive aquelas com dados faltantes. Veja a aula: Estrutura e descrição de dados_aula_02.ipynb
+
+1.3. Escreva o código para verificar a média, variância, máximo, mínimo e os quantis (25%, 50% e 75%) para as variáveis: Area, pH, Riqueza e CPUE. Obs.:A variável Riqueza se trata do número de espécies de peixes por reservatório e CPUE a biomassa em kg/1000m2.
+
+"""
+
+# 1.1
+
+diretorio = '/content/drive/MyDrive/00_Ciencia_de_Dados_PG_Descricao/data_sets/Rodrigues_etal1995_Reservatorios_Parana.xlsx'
+
+# Verificando arquivo
+if os.path.exists(diretorio):
+
+    # Leitura
+    bacia_df = pd.read_excel(diretorio, sheet_name='Bacia')
+    tamanho_idade_df = pd.read_excel(diretorio, sheet_name='tamanho_idade')
+    qualidade_agua_df = pd.read_excel(diretorio, sheet_name='qualidade_agua')
+    fauna_df = pd.read_excel(diretorio, sheet_name='fauna')
+
+    # Data frames
+    print("Bacia DataFrame:")
+    print(bacia_df.head())
+
+    print("\nTamanho e Idade DataFrame:")
+    print(tamanho_idade_df.head())
+
+    print("\nQualidade da Água DataFrame:")
+    print(qualidade_agua_df.head())
+
+    print("\nFauna DataFrame:")
+    print(fauna_df.head())
+else:
+    print("Arquivo não encontrado. Verifique o caminho do arquivo.")
+
+# 1.2
+
+diretorio = '/content/drive/MyDrive/00_Ciencia_de_Dados_PG_Descricao/data_sets/Rodrigues_etal1995_Reservatorios_Parana.xlsx'
+
+# Leitura
+bacia_df = pd.read_excel(diretorio, sheet_name='Bacia')
+tamanho_idade_df = pd.read_excel(diretorio, sheet_name='tamanho_idade')
+qualidade_agua_df = pd.read_excel(diretorio, sheet_name='qualidade_agua')
+fauna_df = pd.read_excel(diretorio, sheet_name='fauna')
+
+# União dos data frames
+df_unida = bacia_df.set_index('Reservatorio').join(tamanho_idade_df.set_index('Reservatorio'), how='outer').join(qualidade_agua_df.set_index('Reservatorio'), how='outer').join(fauna_df.set_index('Reservatorio'), how='outer')
+
+print(df_unida.head())
+
+# 1.3
+
+diretorio = '/content/drive/MyDrive/00_Ciencia_de_Dados_PG_Descricao/data_sets/Rodrigues_etal1995_Reservatorios_Parana.xlsx'
+
+# Leitura
+bacia_df = pd.read_excel(diretorio, sheet_name='Bacia')
+tamanho_idade_df = pd.read_excel(diretorio, sheet_name='tamanho_idade')
+qualidade_agua_df = pd.read_excel(diretorio, sheet_name='qualidade_agua')
+fauna_df = pd.read_excel(diretorio, sheet_name='fauna')
+
+# União dos data frames
+df_unida = bacia_df.set_index('Reservatorio').join(tamanho_idade_df.set_index('Reservatorio'), how='outer').join(qualidade_agua_df.set_index('Reservatorio'), how='outer').join(fauna_df.set_index('Reservatorio'), how='outer')
+
+# Colunas
+colunas = ['Area', 'pH', 'Riqueza', 'CPUE']
+
+# Calculando as estatísticas
+mean_values = df_unida[colunas].mean()
+var_values = df_unida[colunas].var()
+max_values = df_unida[colunas].max()
+min_values = df_unida[colunas].min()
+quantiles = df_unida[colunas].quantile([0.25, 0.50, 0.75])
+
+# Prints
+print("Médias:")
+print(mean_values)
+
+print("\nVariâncias:")
+print(var_values)
+
+print("\nMáximos:")
+print(max_values)
+
+print("\nMínimos:")
+print(min_values)
+
+print("\nQuantis (25%, 50%, 75%):")
+print(quantiles)
